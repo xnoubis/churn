@@ -1,5 +1,5 @@
-import React from 'react';
-import { ArtifactType, ArtifactDefinition } from '../types';
+import React, { useState } from 'react';
+import { ArtifactType, ArtifactDefinition, GenerationMode } from '../types';
 import { 
   Code, 
   FileText, 
@@ -9,11 +9,15 @@ import {
   Cpu, 
   Box,
   ArrowLeft,
-  Hammer
+  Hammer,
+  Zap,
+  Globe,
+  BrainCircuit,
+  Users
 } from 'lucide-react';
 
 interface ArtifactSelectorProps {
-  onSelect: (type: ArtifactType) => void;
+  onSelect: (type: ArtifactType, mode: GenerationMode) => void;
   onBack: () => void;
 }
 
@@ -32,6 +36,14 @@ const ARTIFACT_OPTIONS: ArtifactDefinition[] = [
     title: 'Node.js Script',
     description: 'JavaScript logic, automation, or utility scripts.',
     icon: 'js',
+    promptTemplate: ''
+  },
+  {
+    id: 'troupe',
+    type: ArtifactType.AGENT_TROUPE,
+    title: 'Agent Troupe',
+    description: 'Orchestrate multiple AI agents to solve complex problems.',
+    icon: 'users',
     promptTemplate: ''
   },
   {
@@ -85,11 +97,14 @@ const getIcon = (iconName: string) => {
     case 'react': return <Layout className="w-8 h-8 text-sky-400" />;
     case 'schema': return <Box className="w-8 h-8 text-purple-400" />;
     case 'chart': return <Database className="w-8 h-8 text-red-400" />;
+    case 'users': return <Users className="w-8 h-8 text-indigo-400" />;
     default: return <Cpu className="w-8 h-8" />;
   }
 };
 
 export const ArtifactSelector: React.FC<ArtifactSelectorProps> = ({ onSelect, onBack }) => {
+  const [selectedMode, setSelectedMode] = useState<GenerationMode>(GenerationMode.FAST);
+
   return (
     <div className="flex flex-col h-full">
       <div className="mb-6 flex justify-between items-center">
@@ -110,11 +125,55 @@ export const ArtifactSelector: React.FC<ArtifactSelectorProps> = ({ onSelect, on
         </button>
       </div>
 
+      {/* Mode Selector */}
+      <div className="mb-6 grid grid-cols-3 gap-4">
+        <button
+          onClick={() => setSelectedMode(GenerationMode.FAST)}
+          className={`flex items-center justify-center gap-2 p-3 rounded-lg border transition-all ${
+            selectedMode === GenerationMode.FAST 
+              ? 'bg-builder-accent/10 border-builder-accent text-builder-accent' 
+              : 'bg-builder-surface border-builder-border text-builder-muted hover:border-builder-muted'
+          }`}
+        >
+          <Zap className="w-4 h-4" />
+          <span className="font-semibold">Fast Build</span>
+        </button>
+        <button
+          onClick={() => setSelectedMode(GenerationMode.RESEARCH)}
+          className={`flex items-center justify-center gap-2 p-3 rounded-lg border transition-all ${
+            selectedMode === GenerationMode.RESEARCH
+              ? 'bg-builder-accent/10 border-builder-accent text-builder-accent' 
+              : 'bg-builder-surface border-builder-border text-builder-muted hover:border-builder-muted'
+          }`}
+        >
+          <Globe className="w-4 h-4" />
+          <span className="font-semibold">Research</span>
+        </button>
+        <button
+          onClick={() => setSelectedMode(GenerationMode.THINKING)}
+          className={`flex items-center justify-center gap-2 p-3 rounded-lg border transition-all ${
+            selectedMode === GenerationMode.THINKING
+              ? 'bg-builder-accent/10 border-builder-accent text-builder-accent' 
+              : 'bg-builder-surface border-builder-border text-builder-muted hover:border-builder-muted'
+          }`}
+        >
+          <BrainCircuit className="w-4 h-4" />
+          <span className="font-semibold">Deep Thinking</span>
+        </button>
+      </div>
+      
+      {/* Description for Mode */}
+      <div className="mb-6 text-sm text-builder-muted text-center italic bg-builder-bg/50 p-2 rounded">
+        {selectedMode === GenerationMode.FAST && "Uses Gemini 2.5 Flash for rapid prototyping."}
+        {selectedMode === GenerationMode.RESEARCH && "Uses Gemini 2.5 Flash + Google Search for grounded, up-to-date info."}
+        {selectedMode === GenerationMode.THINKING && "Uses Gemini 3 Pro with Thinking Mode for complex reasoning."}
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 overflow-y-auto pb-4 custom-scrollbar">
         {ARTIFACT_OPTIONS.map((opt) => (
           <button
             key={opt.id}
-            onClick={() => onSelect(opt.type)}
+            onClick={() => onSelect(opt.type, selectedMode)}
             className="group flex flex-col items-start p-6 bg-builder-surface border border-builder-border rounded-xl hover:border-builder-accent hover:shadow-[0_0_20px_rgba(56,189,248,0.1)] transition-all text-left"
           >
             <div className="mb-4 p-3 bg-builder-bg rounded-lg border border-builder-border group-hover:border-builder-accent/50 transition-colors">

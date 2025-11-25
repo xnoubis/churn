@@ -5,7 +5,14 @@ export enum ArtifactType {
   FRAMEWORK = 'FRAMEWORK',
   ANALYSIS = 'ANALYSIS',
   REACT_COMPONENT = 'REACT_COMPONENT',
-  CLI_TOOL = 'CLI_TOOL'
+  CLI_TOOL = 'CLI_TOOL',
+  AGENT_TROUPE = 'AGENT_TROUPE'
+}
+
+export enum GenerationMode {
+  FAST = 'FAST',
+  RESEARCH = 'RESEARCH',
+  THINKING = 'THINKING'
 }
 
 export interface ArtifactDefinition {

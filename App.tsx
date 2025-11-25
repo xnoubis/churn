@@ -3,7 +3,7 @@ import { InputPanel } from './components/InputPanel';
 import { ArtifactSelector } from './components/ArtifactSelector';
 import { ResultPanel } from './components/ResultPanel';
 import { BuildProcess } from './components/BuildProcess';
-import { ArtifactType } from './types';
+import { ArtifactType, GenerationMode } from './types';
 import { generateArtifact, refineArtifact } from './services/geminiService';
 import { Hammer } from 'lucide-react';
 
@@ -26,13 +26,12 @@ export default function App() {
     setStep(Step.TYPE_SELECT);
   };
 
-  const handleTypeSelect = async (type: ArtifactType) => {
+  const handleTypeSelect = async (type: ArtifactType, mode: GenerationMode) => {
     setSelectedType(type);
     setIsBuilding(true);
     
-    // Simulate a small delay for "Processing" effect even if API is instant
-    // But mostly rely on the async call
-    const result = await generateArtifact(concept, type);
+    // Call generation with the selected mode (Fast, Research, or Thinking)
+    const result = await generateArtifact(concept, type, mode);
     
     setArtifact(result);
     setStep(Step.RESULT);
