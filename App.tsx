@@ -1,0 +1,120 @@
+import React, { useState } from 'react';
+import { InputPanel } from './components/InputPanel';
+import { ArtifactSelector } from './components/ArtifactSelector';
+import { ResultPanel } from './components/ResultPanel';
+import { BuildProcess } from './components/BuildProcess';
+import { ArtifactType } from './types';
+import { generateArtifact, refineArtifact } from './services/geminiService';
+import { Hammer } from 'lucide-react';
+
+enum Step {
+  INPUT = 'INPUT',
+  TYPE_SELECT = 'TYPE_SELECT',
+  RESULT = 'RESULT'
+}
+
+export default function App() {
+  const [step, setStep] = useState<Step>(Step.INPUT);
+  const [concept, setConcept] = useState('');
+  const [selectedType, setSelectedType] = useState<ArtifactType | null>(null);
+  const [artifact, setArtifact] = useState('');
+  const [isBuilding, setIsBuilding] = useState(false);
+
+  // -- Handlers --
+
+  const handleInputNext = () => {
+    setStep(Step.TYPE_SELECT);
+  };
+
+  const handleTypeSelect = async (type: ArtifactType) => {
+    setSelectedType(type);
+    setIsBuilding(true);
+    
+    // Simulate a small delay for "Processing" effect even if API is instant
+    // But mostly rely on the async call
+    const result = await generateArtifact(concept, type);
+    
+    setArtifact(result);
+    setStep(Step.RESULT);
+    setIsBuilding(false);
+  };
+
+  const handleRefine = async (instructions: string) => {
+    setIsBuilding(true);
+    const refined = await refineArtifact(artifact, instructions);
+    setArtifact(refined);
+    setIsBuilding(false);
+  };
+
+  const handleReset = () => {
+    setStep(Step.INPUT);
+    setConcept('');
+    setSelectedType(null);
+    setArtifact('');
+  };
+
+  const handleBackToInput = () => {
+    setStep(Step.INPUT);
+  };
+
+  return (
+    <div className="min-h-screen bg-builder-bg text-builder-text font-sans flex flex-col">
+      {/* Header */}
+      <header className="border-b border-builder-border bg-builder-bg/50 backdrop-blur sticky top-0 z-10">
+        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-builder-accent rounded flex items-center justify-center text-builder-bg">
+              <Hammer className="w-5 h-5" />
+            </div>
+            <h1 className="font-mono font-bold text-lg tracking-tight">
+              INTERACTIVE_BUILDER <span className="text-builder-accent text-xs align-top">v0.1</span>
+            </h1>
+          </div>
+          <div className="text-xs font-mono text-builder-muted hidden md:block">
+            WORKING BEATS ELEGANT // SHIP FAST
+          </div>
+        </div>
+      </header>
+
+      {/* Main Content Area */}
+      <main className="flex-1 max-w-6xl mx-auto w-full p-6 flex flex-col relative">
+        <BuildProcess isBuilding={isBuilding} />
+        
+        <div className="flex-1 bg-builder-surface/30 border border-builder-border rounded-2xl p-8 shadow-2xl backdrop-blur-sm">
+          {step === Step.INPUT && (
+            <InputPanel 
+              value={concept} 
+              onChange={setConcept} 
+              onNext={handleInputNext} 
+            />
+          )}
+
+          {step === Step.TYPE_SELECT && (
+            <ArtifactSelector 
+              onSelect={handleTypeSelect} 
+              onBack={handleBackToInput} 
+            />
+          )}
+
+          {step === Step.RESULT && selectedType && (
+            <ResultPanel 
+              artifact={artifact} 
+              type={selectedType}
+              onRefine={handleRefine}
+              onBack={handleReset}
+              isRefining={isBuilding}
+            />
+          )}
+        </div>
+      </main>
+
+      {/* Footer / Status Bar */}
+      <footer className="border-t border-builder-border py-4 bg-builder-bg text-xs font-mono text-builder-muted">
+        <div className="max-w-6xl mx-auto px-6 flex justify-between">
+          <span>STATUS: {isBuilding ? 'BUILDING...' : 'OPERATIONAL'}</span>
+          <span>PROTOCOL: GENIE_MYCELIAL</span>
+        </div>
+      </footer>
+    </div>
+  );
+}

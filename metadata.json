@@ -1,0 +1,5 @@
+{
+  "name": "Interactive Builder",
+  "description": "A rapid prototyping engine that transforms concepts into working artifacts using the Builder pattern.",
+  "requestFramePermissions": []
+}
