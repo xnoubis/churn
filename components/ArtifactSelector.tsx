@@ -13,7 +13,8 @@ import {
   Zap,
   Globe,
   BrainCircuit,
-  Users
+  Users,
+  Layers
 } from 'lucide-react';
 
 interface ArtifactSelectorProps {
@@ -44,6 +45,14 @@ const ARTIFACT_OPTIONS: ArtifactDefinition[] = [
     title: 'Agent Troupe',
     description: 'Orchestrate multiple AI agents to solve complex problems.',
     icon: 'users',
+    promptTemplate: ''
+  },
+  {
+    id: 'recursive',
+    type: ArtifactType.RECURSIVE_CAPABILITY,
+    title: 'Recursive Capability',
+    description: 'Generate self-improving capabilities at increasing depths.',
+    icon: 'recursive',
     promptTemplate: ''
   },
   {
@@ -98,6 +107,7 @@ const getIcon = (iconName: string) => {
     case 'schema': return <Box className="w-8 h-8 text-purple-400" />;
     case 'chart': return <Database className="w-8 h-8 text-red-400" />;
     case 'users': return <Users className="w-8 h-8 text-indigo-400" />;
+    case 'recursive': return <Layers className="w-8 h-8 text-pink-400" />;
     default: return <Cpu className="w-8 h-8" />;
   }
 };

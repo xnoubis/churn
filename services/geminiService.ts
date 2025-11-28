@@ -41,6 +41,11 @@ const getPromptForType = (type: ArtifactType, concept: string): string => {
       The pattern should define a base Agent class, specific specialized Agent subclasses (e.g., Researcher, Critic, Builder) relevant to the concept, 
       and an Orchestrator/Troupe class that manages the flow of information between them. 
       Include a main execution block. Concept: ${concept}`;
+    case ArtifactType.RECURSIVE_CAPABILITY:
+      return `Create a Python script implementing the 'Recursive Capability' pattern for the following concept. 
+      The pattern should define a Capability data structure (using dataclasses) and a recursive function that generates capabilities at increasing depths (e.g., up to max_depth). 
+      Each level should build upon or generate capabilities for the next level. 
+      Include a main execution block that demonstrates the recursion. Concept: ${concept}`;
     default:
       return `Build a working prototype for the following concept: ${concept}`;
   }
