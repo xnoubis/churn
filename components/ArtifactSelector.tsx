@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { ArtifactType, ArtifactDefinition, GenerationMode } from '../types';
+import React from 'react';
+import { ArtifactType, ArtifactDefinition } from '../types';
 import { 
   Code, 
   FileText, 
@@ -10,15 +10,12 @@ import {
   Box,
   ArrowLeft,
   Hammer,
-  Zap,
-  Globe,
-  BrainCircuit,
   Users,
   Layers
 } from 'lucide-react';
 
 interface ArtifactSelectorProps {
-  onSelect: (type: ArtifactType, mode: GenerationMode) => void;
+  onSelect: (type: ArtifactType) => void;
   onBack: () => void;
 }
 
@@ -113,10 +110,8 @@ const getIcon = (iconName: string) => {
 };
 
 export const ArtifactSelector: React.FC<ArtifactSelectorProps> = ({ onSelect, onBack }) => {
-  const [selectedMode, setSelectedMode] = useState<GenerationMode>(GenerationMode.FAST);
-
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full animate-fade-in">
       <div className="mb-6 flex justify-between items-center">
         <div>
           <h2 className="text-2xl font-bold text-builder-text mb-2 flex items-center gap-2">
@@ -135,55 +130,11 @@ export const ArtifactSelector: React.FC<ArtifactSelectorProps> = ({ onSelect, on
         </button>
       </div>
 
-      {/* Mode Selector */}
-      <div className="mb-6 grid grid-cols-3 gap-4">
-        <button
-          onClick={() => setSelectedMode(GenerationMode.FAST)}
-          className={`flex items-center justify-center gap-2 p-3 rounded-lg border transition-all ${
-            selectedMode === GenerationMode.FAST 
-              ? 'bg-builder-accent/10 border-builder-accent text-builder-accent' 
-              : 'bg-builder-surface border-builder-border text-builder-muted hover:border-builder-muted'
-          }`}
-        >
-          <Zap className="w-4 h-4" />
-          <span className="font-semibold">Fast Build</span>
-        </button>
-        <button
-          onClick={() => setSelectedMode(GenerationMode.RESEARCH)}
-          className={`flex items-center justify-center gap-2 p-3 rounded-lg border transition-all ${
-            selectedMode === GenerationMode.RESEARCH
-              ? 'bg-builder-accent/10 border-builder-accent text-builder-accent' 
-              : 'bg-builder-surface border-builder-border text-builder-muted hover:border-builder-muted'
-          }`}
-        >
-          <Globe className="w-4 h-4" />
-          <span className="font-semibold">Research</span>
-        </button>
-        <button
-          onClick={() => setSelectedMode(GenerationMode.THINKING)}
-          className={`flex items-center justify-center gap-2 p-3 rounded-lg border transition-all ${
-            selectedMode === GenerationMode.THINKING
-              ? 'bg-builder-accent/10 border-builder-accent text-builder-accent' 
-              : 'bg-builder-surface border-builder-border text-builder-muted hover:border-builder-muted'
-          }`}
-        >
-          <BrainCircuit className="w-4 h-4" />
-          <span className="font-semibold">Deep Thinking</span>
-        </button>
-      </div>
-      
-      {/* Description for Mode */}
-      <div className="mb-6 text-sm text-builder-muted text-center italic bg-builder-bg/50 p-2 rounded">
-        {selectedMode === GenerationMode.FAST && "Uses Gemini 2.5 Flash for rapid prototyping."}
-        {selectedMode === GenerationMode.RESEARCH && "Uses Gemini 2.5 Flash + Google Search for grounded, up-to-date info."}
-        {selectedMode === GenerationMode.THINKING && "Uses Gemini 3 Pro with Thinking Mode for complex reasoning."}
-      </div>
-
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 overflow-y-auto pb-4 custom-scrollbar">
         {ARTIFACT_OPTIONS.map((opt) => (
           <button
             key={opt.id}
-            onClick={() => onSelect(opt.type, selectedMode)}
+            onClick={() => onSelect(opt.type)}
             className="group flex flex-col items-start p-6 bg-builder-surface border border-builder-border rounded-xl hover:border-builder-accent hover:shadow-[0_0_20px_rgba(56,189,248,0.1)] transition-all text-left"
           >
             <div className="mb-4 p-3 bg-builder-bg rounded-lg border border-builder-border group-hover:border-builder-accent/50 transition-colors">

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { InputPanel } from './components/InputPanel';
+import { ModeSelector } from './components/ModeSelector';
 import { ArtifactSelector } from './components/ArtifactSelector';
 import { ResultPanel } from './components/ResultPanel';
 import { BuildProcess } from './components/BuildProcess';
@@ -9,6 +10,7 @@ import { Hammer } from 'lucide-react';
 
 enum Step {
   INPUT = 'INPUT',
+  MODE_SELECT = 'MODE_SELECT',
   TYPE_SELECT = 'TYPE_SELECT',
   RESULT = 'RESULT'
 }
@@ -16,6 +18,7 @@ enum Step {
 export default function App() {
   const [step, setStep] = useState<Step>(Step.INPUT);
   const [concept, setConcept] = useState('');
+  const [selectedMode, setSelectedMode] = useState<GenerationMode>(GenerationMode.FAST);
   const [selectedType, setSelectedType] = useState<ArtifactType | null>(null);
   const [artifact, setArtifact] = useState('');
   const [isBuilding, setIsBuilding] = useState(false);
@@ -23,15 +26,20 @@ export default function App() {
   // -- Handlers --
 
   const handleInputNext = () => {
+    setStep(Step.MODE_SELECT);
+  };
+
+  const handleModeSelect = (mode: GenerationMode) => {
+    setSelectedMode(mode);
     setStep(Step.TYPE_SELECT);
   };
 
-  const handleTypeSelect = async (type: ArtifactType, mode: GenerationMode) => {
+  const handleTypeSelect = async (type: ArtifactType) => {
     setSelectedType(type);
     setIsBuilding(true);
     
-    // Call generation with the selected mode (Fast, Research, or Thinking)
-    const result = await generateArtifact(concept, type, mode);
+    // Call generation with the previously selected mode and new type
+    const result = await generateArtifact(concept, type, selectedMode);
     
     setArtifact(result);
     setStep(Step.RESULT);
@@ -52,8 +60,10 @@ export default function App() {
     setArtifact('');
   };
 
-  const handleBackToInput = () => {
-    setStep(Step.INPUT);
+  const handleBack = () => {
+    if (step === Step.MODE_SELECT) setStep(Step.INPUT);
+    if (step === Step.TYPE_SELECT) setStep(Step.MODE_SELECT);
+    if (step === Step.RESULT) handleReset();
   };
 
   return (
@@ -79,7 +89,7 @@ export default function App() {
       <main className="flex-1 max-w-6xl mx-auto w-full p-6 flex flex-col relative">
         <BuildProcess isBuilding={isBuilding} />
         
-        <div className="flex-1 bg-builder-surface/30 border border-builder-border rounded-2xl p-8 shadow-2xl backdrop-blur-sm">
+        <div className="flex-1 bg-builder-surface/30 border border-builder-border rounded-2xl p-8 shadow-2xl backdrop-blur-sm transition-all duration-300">
           {step === Step.INPUT && (
             <InputPanel 
               value={concept} 
@@ -88,10 +98,17 @@ export default function App() {
             />
           )}
 
+          {step === Step.MODE_SELECT && (
+            <ModeSelector 
+              onSelect={handleModeSelect}
+              onBack={handleBack}
+            />
+          )}
+
           {step === Step.TYPE_SELECT && (
             <ArtifactSelector 
               onSelect={handleTypeSelect} 
-              onBack={handleBackToInput} 
+              onBack={handleBack} 
             />
           )}
 
