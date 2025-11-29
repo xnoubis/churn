@@ -7,11 +7,12 @@ import {
   CheckCircle2,
   Play
 } from 'lucide-react';
-import { ArtifactType } from '../types';
+import { ArtifactType, GenerationMode } from '../types';
 
 interface ResultPanelProps {
   artifact: string;
   type: ArtifactType;
+  mode: GenerationMode;
   onRefine: (instruction: string) => void;
   onBack: () => void;
   isRefining: boolean;
@@ -20,6 +21,7 @@ interface ResultPanelProps {
 export const ResultPanel: React.FC<ResultPanelProps> = ({ 
   artifact, 
   type, 
+  mode,
   onRefine, 
   onBack,
   isRefining 
@@ -87,13 +89,18 @@ export const ResultPanel: React.FC<ResultPanelProps> = ({
 
       {/* Artifact Viewer */}
       <div className="flex-1 overflow-hidden rounded-xl border border-builder-border bg-builder-surface flex flex-col shadow-2xl">
-        <div className="bg-[#0b1221] px-4 py-2 flex items-center gap-2 border-b border-builder-border">
-          <div className="w-3 h-3 rounded-full bg-red-500/20 border border-red-500/50" />
-          <div className="w-3 h-3 rounded-full bg-yellow-500/20 border border-yellow-500/50" />
-          <div className="w-3 h-3 rounded-full bg-green-500/20 border border-green-500/50" />
-          <span className="ml-2 text-xs text-builder-muted font-mono opacity-50">
-            {type.toLowerCase()}_artifact.gen
-          </span>
+        <div className="bg-[#0b1221] px-4 py-2 flex items-center gap-2 border-b border-builder-border justify-between">
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full bg-red-500/20 border border-red-500/50" />
+            <div className="w-3 h-3 rounded-full bg-yellow-500/20 border border-yellow-500/50" />
+            <div className="w-3 h-3 rounded-full bg-green-500/20 border border-green-500/50" />
+            <span className="ml-2 text-xs text-builder-muted font-mono opacity-50">
+              {type.toLowerCase()}_artifact.gen
+            </span>
+          </div>
+          <div className="text-[10px] font-mono text-builder-muted uppercase border border-builder-border px-2 rounded opacity-70">
+            {mode}
+          </div>
         </div>
         <pre className="flex-1 overflow-auto p-6 font-mono text-sm text-builder-text custom-scrollbar">
           <code>{artifact}</code>

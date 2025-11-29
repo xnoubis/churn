@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArtifactType, ArtifactDefinition } from '../types';
+import { ArtifactType, ArtifactDefinition, GenerationMode } from '../types';
 import { 
   Code, 
   FileText, 
@@ -11,12 +11,16 @@ import {
   ArrowLeft,
   Hammer,
   Users,
-  Layers
+  Layers,
+  Zap,
+  Globe,
+  BrainCircuit
 } from 'lucide-react';
 
 interface ArtifactSelectorProps {
   onSelect: (type: ArtifactType) => void;
   onBack: () => void;
+  selectedMode: GenerationMode;
 }
 
 const ARTIFACT_OPTIONS: ArtifactDefinition[] = [
@@ -109,7 +113,30 @@ const getIcon = (iconName: string) => {
   }
 };
 
-export const ArtifactSelector: React.FC<ArtifactSelectorProps> = ({ onSelect, onBack }) => {
+const getModeBadge = (mode: GenerationMode) => {
+  switch (mode) {
+    case GenerationMode.FAST:
+      return (
+        <div className="flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono border border-yellow-400/30 bg-yellow-400/10 text-yellow-400">
+          <Zap className="w-3 h-3" /> FAST MODE
+        </div>
+      );
+    case GenerationMode.RESEARCH:
+      return (
+        <div className="flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono border border-sky-400/30 bg-sky-400/10 text-sky-400">
+          <Globe className="w-3 h-3" /> RESEARCH MODE
+        </div>
+      );
+    case GenerationMode.THINKING:
+      return (
+        <div className="flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono border border-purple-400/30 bg-purple-400/10 text-purple-400">
+          <BrainCircuit className="w-3 h-3" /> THINKING MODE
+        </div>
+      );
+  }
+};
+
+export const ArtifactSelector: React.FC<ArtifactSelectorProps> = ({ onSelect, onBack, selectedMode }) => {
   return (
     <div className="flex flex-col h-full animate-fade-in">
       <div className="mb-6 flex justify-between items-center">
@@ -118,9 +145,12 @@ export const ArtifactSelector: React.FC<ArtifactSelectorProps> = ({ onSelect, on
             <Hammer className="w-6 h-6 text-builder-accent" />
             Select Artifact Type
           </h2>
-          <p className="text-builder-muted">
-            Determine the form of your crystallization.
-          </p>
+          <div className="flex items-center gap-3">
+            <p className="text-builder-muted">
+              Determine the form of your crystallization.
+            </p>
+            {getModeBadge(selectedMode)}
+          </div>
         </div>
         <button 
           onClick={onBack}

@@ -109,6 +109,7 @@ export default function App() {
             <ArtifactSelector 
               onSelect={handleTypeSelect} 
               onBack={handleBack} 
+              selectedMode={selectedMode}
             />
           )}
 
@@ -116,6 +117,7 @@ export default function App() {
             <ResultPanel 
               artifact={artifact} 
               type={selectedType}
+              mode={selectedMode}
               onRefine={handleRefine}
               onBack={handleReset}
               isRefining={isBuilding}
