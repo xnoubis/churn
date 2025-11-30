@@ -13,6 +13,7 @@ interface ResultPanelProps {
   artifact: string;
   type: ArtifactType;
   mode: GenerationMode;
+  version: number;
   onRefine: (instruction: string) => void;
   onBack: () => void;
   isRefining: boolean;
@@ -22,6 +23,7 @@ export const ResultPanel: React.FC<ResultPanelProps> = ({
   artifact, 
   type, 
   mode,
+  version,
   onRefine, 
   onBack,
   isRefining 
@@ -42,13 +44,13 @@ export const ResultPanel: React.FC<ResultPanelProps> = ({
     
     // Determine extension
     let ext = 'txt';
-    if (type === ArtifactType.CODE_PYTHON || type === ArtifactType.ANALYSIS || type === ArtifactType.CLI_TOOL) ext = 'py';
+    if (type === ArtifactType.CODE_PYTHON || type === ArtifactType.ANALYSIS || type === ArtifactType.CLI_TOOL || type === ArtifactType.AGENT_TROUPE || type === ArtifactType.RECURSIVE_CAPABILITY || type === ArtifactType.PSIP_SIGNATURE) ext = 'py';
     if (type === ArtifactType.CODE_JS) ext = 'js';
     if (type === ArtifactType.REACT_COMPONENT) ext = 'tsx';
     if (type === ArtifactType.DOCUMENT) ext = 'md';
     if (type === ArtifactType.FRAMEWORK) ext = 'json';
 
-    element.download = `artifact_v1.${ext}`;
+    element.download = `artifact_v${version}.${ext}`;
     document.body.appendChild(element);
     element.click();
     document.body.removeChild(element);
@@ -82,7 +84,7 @@ export const ResultPanel: React.FC<ResultPanelProps> = ({
                 onClick={handleDownload}
                 className="flex items-center gap-2 px-3 py-1.5 rounded bg-builder-surface border border-builder-border text-sm hover:border-builder-accent transition-colors text-builder-text"
             >
-                <Download className="w-4 h-4" /> Download
+                <Download className="w-4 h-4" /> Download v{version}
             </button>
         </div>
       </div>
@@ -95,7 +97,7 @@ export const ResultPanel: React.FC<ResultPanelProps> = ({
             <div className="w-3 h-3 rounded-full bg-yellow-500/20 border border-yellow-500/50" />
             <div className="w-3 h-3 rounded-full bg-green-500/20 border border-green-500/50" />
             <span className="ml-2 text-xs text-builder-muted font-mono opacity-50">
-              {type.toLowerCase()}_artifact.gen
+              {type.toLowerCase()}_artifact_v{version}.gen
             </span>
           </div>
           <div className="text-[10px] font-mono text-builder-muted uppercase border border-builder-border px-2 rounded opacity-70">

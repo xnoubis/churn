@@ -22,6 +22,7 @@ export default function App() {
   const [selectedType, setSelectedType] = useState<ArtifactType | null>(null);
   const [artifact, setArtifact] = useState('');
   const [isBuilding, setIsBuilding] = useState(false);
+  const [version, setVersion] = useState(1);
 
   // -- Handlers --
 
@@ -37,6 +38,7 @@ export default function App() {
   const handleTypeSelect = async (type: ArtifactType) => {
     setSelectedType(type);
     setIsBuilding(true);
+    setVersion(1); // Reset version for new artifact
     
     // Call generation with the previously selected mode and new type
     const result = await generateArtifact(concept, type, selectedMode);
@@ -50,6 +52,7 @@ export default function App() {
     setIsBuilding(true);
     const refined = await refineArtifact(artifact, instructions);
     setArtifact(refined);
+    setVersion(prev => prev + 1); // Increment version on refinement
     setIsBuilding(false);
   };
 
@@ -58,6 +61,7 @@ export default function App() {
     setConcept('');
     setSelectedType(null);
     setArtifact('');
+    setVersion(1);
   };
 
   const handleBack = () => {
@@ -118,6 +122,7 @@ export default function App() {
               artifact={artifact} 
               type={selectedType}
               mode={selectedMode}
+              version={version}
               onRefine={handleRefine}
               onBack={handleReset}
               isRefining={isBuilding}

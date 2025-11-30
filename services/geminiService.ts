@@ -47,6 +47,10 @@ const getPromptForType = (type: ArtifactType, concept: string): string => {
       Implement a function 'recurse(max_depth)' that returns a list of Capabilities. 
       Each capability at depth 'n' should conceptually 'generate' the capability at depth 'n+1'. 
       Include a main execution block that demonstrates the recursion. Concept: ${concept}`;
+    case ArtifactType.PSIP_SIGNATURE:
+      return `Create a Python script implementing the 'PSIP' (Privacy/Pattern Signature) pattern for the following concept. 
+      The script should include functions to 'compress' text into a signature (extracting patterns/essence while dropping private content) and 'validate' or 'restore' based on that signature. 
+      Include a main execution block. Concept: ${concept}`;
     default:
       return `Build a working prototype for the following concept: ${concept}`;
   }

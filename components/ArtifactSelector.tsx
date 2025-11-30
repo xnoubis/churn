@@ -14,7 +14,8 @@ import {
   Layers,
   Zap,
   Globe,
-  BrainCircuit
+  BrainCircuit,
+  Fingerprint
 } from 'lucide-react';
 
 interface ArtifactSelectorProps {
@@ -54,6 +55,14 @@ const ARTIFACT_OPTIONS: ArtifactDefinition[] = [
     title: 'Recursive Capability',
     description: 'Generate self-improving capabilities at increasing depths.',
     icon: 'recursive',
+    promptTemplate: ''
+  },
+  {
+    id: 'psip',
+    type: ArtifactType.PSIP_SIGNATURE,
+    title: 'PSIP Signature',
+    description: 'Compress content into privacy-preserving pattern signatures.',
+    icon: 'psip',
     promptTemplate: ''
   },
   {
@@ -109,6 +118,7 @@ const getIcon = (iconName: string) => {
     case 'chart': return <Database className="w-8 h-8 text-red-400" />;
     case 'users': return <Users className="w-8 h-8 text-indigo-400" />;
     case 'recursive': return <Layers className="w-8 h-8 text-pink-400" />;
+    case 'psip': return <Fingerprint className="w-8 h-8 text-emerald-400" />;
     default: return <Cpu className="w-8 h-8" />;
   }
 };
