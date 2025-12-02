@@ -4,6 +4,7 @@ import { ModeSelector } from './components/ModeSelector';
 import { ArtifactSelector } from './components/ArtifactSelector';
 import { ResultPanel } from './components/ResultPanel';
 import { BuildProcess } from './components/BuildProcess';
+import { StepIndicator } from './components/StepIndicator';
 import { ArtifactType, GenerationMode } from './types';
 import { generateArtifact, refineArtifact } from './services/geminiService';
 import { Hammer } from 'lucide-react';
@@ -48,6 +49,18 @@ export default function App() {
     setIsBuilding(false);
   };
 
+  const handleRebuild = async () => {
+    if (!selectedType) return;
+    setIsBuilding(true);
+    
+    // Call generation with current settings
+    const result = await generateArtifact(concept, selectedType, selectedMode);
+    
+    setArtifact(result);
+    setVersion(prev => prev + 1); // Increment version on rebuild
+    setIsBuilding(false);
+  };
+
   const handleRefine = async (instructions: string) => {
     setIsBuilding(true);
     const refined = await refineArtifact(artifact, instructions);
@@ -80,7 +93,7 @@ export default function App() {
               <Hammer className="w-5 h-5" />
             </div>
             <h1 className="font-mono font-bold text-lg tracking-tight">
-              INTERACTIVE_BUILDER <span className="text-builder-accent text-xs align-top">v0.1</span>
+              INTERACTIVE_BUILDER <span className="text-builder-accent text-xs align-top">v0.3</span>
             </h1>
           </div>
           <div className="text-xs font-mono text-builder-muted hidden md:block">
@@ -92,6 +105,11 @@ export default function App() {
       {/* Main Content Area */}
       <main className="flex-1 max-w-6xl mx-auto w-full p-6 flex flex-col relative">
         <BuildProcess isBuilding={isBuilding} />
+        
+        {/* Progress Stepper */}
+        <div className="mb-6">
+          <StepIndicator currentStep={step} />
+        </div>
         
         <div className="flex-1 bg-builder-surface/30 border border-builder-border rounded-2xl p-8 shadow-2xl backdrop-blur-sm transition-all duration-300">
           {step === Step.INPUT && (
@@ -124,6 +142,7 @@ export default function App() {
               mode={selectedMode}
               version={version}
               onRefine={handleRefine}
+              onRebuild={handleRebuild}
               onBack={handleReset}
               isRefining={isBuilding}
             />

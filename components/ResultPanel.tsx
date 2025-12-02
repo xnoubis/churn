@@ -5,7 +5,8 @@ import {
   RefreshCw, 
   ArrowLeft, 
   CheckCircle2,
-  Play
+  Play,
+  RotateCcw
 } from 'lucide-react';
 import { ArtifactType, GenerationMode } from '../types';
 
@@ -15,6 +16,7 @@ interface ResultPanelProps {
   mode: GenerationMode;
   version: number;
   onRefine: (instruction: string) => void;
+  onRebuild: () => void;
   onBack: () => void;
   isRefining: boolean;
 }
@@ -25,6 +27,7 @@ export const ResultPanel: React.FC<ResultPanelProps> = ({
   mode,
   version,
   onRefine, 
+  onRebuild,
   onBack,
   isRefining 
 }) => {
@@ -73,6 +76,15 @@ export const ResultPanel: React.FC<ResultPanelProps> = ({
             <ArrowLeft className="w-4 h-4" /> New Build
         </button>
         <div className="flex gap-2">
+            <button 
+                onClick={onRebuild}
+                disabled={isRefining}
+                className="flex items-center gap-2 px-3 py-1.5 rounded bg-builder-surface border border-builder-border text-sm hover:border-builder-accent transition-colors text-builder-text disabled:opacity-50 disabled:cursor-not-allowed"
+                title="Re-run generation with same settings"
+            >
+                <RotateCcw className="w-4 h-4" />
+                Rebuild
+            </button>
             <button 
                 onClick={handleCopy}
                 className="flex items-center gap-2 px-3 py-1.5 rounded bg-builder-surface border border-builder-border text-sm hover:border-builder-accent transition-colors text-builder-text"
